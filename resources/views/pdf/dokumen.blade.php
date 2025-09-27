@@ -44,17 +44,15 @@
         </tr>
         <tr>
             <th>Lingkup Perubahan</th>
-            <td colspan="2">
-                {{ implode(', ', $dokumen->lingkup_perubahan) }}
-            </td>
+            <td colspan="2">{{ implode(', ', $dokumen->lingkup_perubahan) }}</td>
             <th>Penyusun</th>
             <td colspan="2">{!! $dokumen->penyusun !!}</td>
         </tr>
         <tr>
             <th>Target Penyelesaian</th>
-            <td>{{ $dokumen->target_penyelesaian->format('d F Y') }}</td>
+            <td colspan = "2">{{ $dokumen->target_penyelesaian->format('d F Y') }}</td>
             <th>Lokasi</th>
-            <td colspan="3">{{ $dokumen->lokasi }}</td>
+            <td colspan="2">{{ $dokumen->lokasi }}</td>
         </tr>
     </table>
 
@@ -68,12 +66,8 @@
             <td colspan="5">{{ $dokumen->analisisPerubahan->deskripsi ?? '-' }}</td>
         </tr>
         <tr>
-            <th>Prioritas</th>
-            <td>{{ $dokumen->analisisPerubahan->prioritas ?? '-' }}</td>
-            <th>Kategori</th>
-            <td>{{ $dokumen->analisisPerubahan->kategori ?? '-' }}</td>
             <th>Risiko</th>
-            <td>
+            <td colspan="5">
                 @if(!empty($dokumen->analisisPerubahan->risiko))
                     <ol style="margin:0;padding-left:16px;">
                         @foreach(explode("\n", $dokumen->analisisPerubahan->risiko) as $risiko)
@@ -110,6 +104,12 @@
                     -
                 @endif
             </td>
+        </tr>
+        <tr>
+            <th>Prioritas</th>
+            <td colspan="2">{{ $dokumen->analisisPerubahan->prioritas ?? '-' }}</td>
+            <th>Kategori</th>
+            <td colspan="2">{{ $dokumen->analisisPerubahan->kategori ?? '-' }}</td>
         </tr>
     </table>
 

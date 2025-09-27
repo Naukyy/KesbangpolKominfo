@@ -113,12 +113,14 @@ class DokumenController extends Controller
     public function cetakPdf(InformasiRencanaPerubahan $dokuman)
     {
         $this->authorize('view', $dokuman);
-        
+
         $dokumen = $dokuman->load(['analisisPerubahan', 'rencanaPengembanganPerubahan', 'pemantauanPerubahan']);
-        
+
         $pdf = Pdf::loadView('pdf.dokumen', compact('dokumen'))
             ->setPaper('a4', 'portrait');
-            
-        return $pdf->stream('dokumen-' . $dokumen->nomor_dokumen . '.pdf');
+
+        $filename = str_replace(['/', '\\'], '-', $dokumen->nomor_dokumen);
+
+        return $pdf->stream('dokumen-' . $filename . '.pdf');
     }
 }

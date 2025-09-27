@@ -30,15 +30,15 @@
         </div>
         <div class="mb-3">
             <label for="risiko" class="form-label">Risiko</label>
-            <input type="text" name="risiko" id="risiko" class="form-control" value="{{ old('risiko', $analisis->risiko) }}">
+            <textarea name="risiko" id="risiko" class="form-control">{{ old('risiko', $analisis->risiko) }}</textarea>
         </div>
         <div class="mb-3">
             <label for="dampak" class="form-label">Dampak</label>
-            <input type="text" name="dampak" id="dampak" class="form-control" value="{{ old('dampak', $analisis->dampak) }}">
+            <textarea name="dampak" id="dampak" class="form-control">{{ old('dampak', $analisis->dampak) }}</textarea>
         </div>
         <div class="mb-3">
             <label for="mitigasi" class="form-label">Mitigasi</label>
-            <input type="text" name="mitigasi" id="mitigasi" class="form-control" value="{{ old('mitigasi', $analisis->mitigasi) }}">
+            <textarea name="mitigasi" id="mitigasi" class="form-control">{{ old('mitigasi', $analisis->mitigasi) }}</textarea>
         </div>
         <button type="submit" class="btn btn-primary">Simpan</button>
         <a href="{{ route('dokumen.show', $dokuman) }}" class="btn btn-secondary">Batal</a>
