@@ -23,7 +23,7 @@
         </div>
         <div class="mb-3">
             <label for="penugasan" class="form-label">Penugasan</label>
-            <input type="text" name="penugasan" id="penugasan" class="form-control" value="{{ old('penugasan', $pemantauan->penugasan) }}">
+            <textarea name="penugasan" id="penugasan" class="form-control">{{ old('penugasan', $pemantauan->penugasan) }}</textarea>
         </div>
         <div class="mb-3">
             <label for="diusulkan_oleh_jabatan" class="form-label">Diusulkan Oleh (Jabatan)</label>

@@ -158,14 +158,13 @@
     <!-- Pemantauan Perubahan -->
     <table>
         <tr>
-            <th colspan="5" class="center section-title">Pemantauan Perubahan</th>
+            <th colspan="4" class="center section-title">Pemantauan Perubahan</th>
         </tr>
         <tr>
             <th>Status</th>
             <th>Disetujui</th>
             <th>Ditunda</th>
             <th>Ditolak</th>
-            <th>Keterangan</th>
         </tr>
         <tr>
             @php
@@ -180,13 +179,18 @@
             <td class="center">{{ $status == 'Disetujui' ? '✔' : '' }}</td>
             <td class="center">{{ $status == 'Ditunda' ? '✔' : '' }}</td>
             <td class="center">{{ $status == 'Ditolak' ? '✔' : '' }}</td>
-            <td>{{ $pemantauan && $pemantauan->keterangan !== null ? $pemantauan->keterangan : '-' }}</td>
         </tr>
         <tr>
-            <th colspan="5">Penugasan</th>
+            <th colspan="4">Keterangan</th>
         </tr>
         <tr>
-            <td colspan="5">
+            <td colspan="4">{{ $pemantauan && $pemantauan->keterangan !== null ? $pemantauan->keterangan : '-' }}</td>
+        </tr>
+        <tr>
+            <th colspan="4">Penugasan</th>
+        </tr>
+        <tr>
+            <td colspan="4">
                 @if($pemantauan && !empty($pemantauan->penugasan))
                     <ol style="margin:0;padding-left:16px;">
                         @foreach(preg_split('/\r\n|\r|\n/', $pemantauan->penugasan) as $petugas)
@@ -198,16 +202,12 @@
                 @endif
             </td>
         </tr>
-    </table>
-
-    <!-- Tanda Tangan -->
-    <table style="margin-top:20px;">
         <tr>
-            <th class="center">Diusulkan Oleh,</th>
-            <th class="center">Disetujui Oleh,</th>
+            <th colspan="2" class="center">Diusulkan Oleh,</th>
+            <th colspan="2" class="center">Disetujui Oleh,</th>
         </tr>
         <tr>
-            <td class="center">
+            <td colspan="2" class="center">
                 <div>{{ $pemantauan && $pemantauan->diusulkan_oleh_jabatan ? $pemantauan->diusulkan_oleh_jabatan : '-' }}</div>
                 <br><br>
                 <div>
@@ -215,7 +215,7 @@
                     NIP. {{ $pemantauan && $pemantauan->diusulkan_oleh_nip ? $pemantauan->diusulkan_oleh_nip : '-' }}
                 </div>
             </td>
-            <td class="center">
+            <td colspan="2" class="center">
                 <div>{{ $pemantauan && $pemantauan->disetujui_oleh_jabatan ? $pemantauan->disetujui_oleh_jabatan : '-' }}</div>
                 <br><br>
                 <div>
