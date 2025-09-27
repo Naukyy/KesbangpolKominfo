@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Formulir Perubahan Kesbangpol - {{ $dokumen->nomor_dokumen }}</title>
     <style>
+        @page { margin: 1in; }
         body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; }
         table { width: 100%; border-collapse: collapse; }
         th, td { border: 1px solid #000; padding: 6px; vertical-align: top; }
@@ -18,9 +19,20 @@
         .bg-danger { background: #dc3545; color: #fff; }
         .bg-secondary { background: #6c757d; color: #fff; }
         a { color: #007bff; text-decoration: underline; }
+        .watermark {
+            position: fixed;
+            top: -40px;
+            right: 10px;
+            color: #808080;
+            font-style: italic;
+            font-size: 12px;
+            opacity: 0.5;
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
+    <div class="watermark">DOKUMENTASI MANAJEMEN PERUBAHAN</div>
     <table style="margin-bottom:10px;">
         <tr>
             <td class="no-border center" colspan="2">
@@ -36,11 +48,13 @@
         </tr>
         <tr>
             <th>Nomor</th>
-            <td>{{ $dokumen->nomor_dokumen }}</td>
+            <td colspan="2">{{ $dokumen->nomor_dokumen }}</td>
             <th>Tanggal</th>
-            <td>{{ $dokumen->tanggal_dokumen->format('d F Y') }}</td>
+            <td colspan="2">{{ $dokumen->tanggal_dokumen->format('d F Y') }}</td>
+        </tr>
+        <tr>
             <th>Judul</th>
-            <td>{{ $dokumen->judul }}</td>
+            <td colspan="5">{{ $dokumen->judul }}</td>
         </tr>
         <tr>
             <th>Lingkup Perubahan</th>
@@ -209,17 +223,17 @@
         <tr>
             <td colspan="2" class="center">
                 <div>{{ $pemantauan && $pemantauan->diusulkan_oleh_jabatan ? $pemantauan->diusulkan_oleh_jabatan : '-' }}</div>
-                <br><br>
+                <br><br><br><br>
                 <div>
-                    {{ $pemantauan && $pemantauan->diusulkan_oleh_nama ? $pemantauan->diusulkan_oleh_nama : '-' }}<br>
+                    <u>{{ $pemantauan && $pemantauan->diusulkan_oleh_nama ? $pemantauan->diusulkan_oleh_nama : '-' }}</u><br>
                     NIP. {{ $pemantauan && $pemantauan->diusulkan_oleh_nip ? $pemantauan->diusulkan_oleh_nip : '-' }}
                 </div>
             </td>
             <td colspan="2" class="center">
                 <div>{{ $pemantauan && $pemantauan->disetujui_oleh_jabatan ? $pemantauan->disetujui_oleh_jabatan : '-' }}</div>
-                <br><br>
+                <br><br><br><br>
                 <div>
-                    {{ $pemantauan && $pemantauan->disetujui_oleh_nama ? $pemantauan->disetujui_oleh_nama : '-' }}<br>
+                    <u>{{ $pemantauan && $pemantauan->disetujui_oleh_nama ? $pemantauan->disetujui_oleh_nama : '-' }}</u><br>
                     NIP. {{ $pemantauan && $pemantauan->disetujui_oleh_nip ? $pemantauan->disetujui_oleh_nip : '-' }}
                 </div>
             </td>
