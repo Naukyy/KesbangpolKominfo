@@ -33,25 +33,101 @@
 
                     <div class="mb-3">
                         <label class="form-label">Lingkup Perubahan *</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Kebijakan" id="kebijakan">
-                            <label class="form-check-label" for="kebijakan">Kebijakan</label>
+                        <div class="row mb-2">
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Kebijakan" id="kebijakan">
+                                    <label class="form-check-label" for="kebijakan">Kebijakan</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Prosedur" id="prosedur">
+                                    <label class="form-check-label" for="prosedur">Prosedur</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Struktur Organisasi" id="struktur">
+                                    <label class="form-check-label" for="struktur">Struktur Organisasi</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Sistem Teknologi" id="teknologi">
+                                    <label class="form-check-label" for="teknologi">Sistem Teknologi</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Sumber Daya Manusia" id="sdm">
+                                    <label class="form-check-label" for="sdm">Sumber Daya Manusia</label>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Prosedur" id="prosedur">
-                            <label class="form-check-label" for="prosedur">Prosedur</label>
+                        <div class="row mb-2">
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Proses Bisnis" id="proses_bisnis">
+                                    <label class="form-check-label" for="proses_bisnis">Proses Bisnis</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Aplikasi" id="aplikasi">
+                                    <label class="form-check-label" for="aplikasi">Aplikasi</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Infrastruktur" id="infrastruktur">
+                                    <label class="form-check-label" for="infrastruktur">Infrastruktur</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Lingkungan Organisasi" id="lingkungan_organisasi">
+                                    <label class="form-check-label" for="lingkungan_organisasi">Lingkungan Organisasi</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Data" id="data">
+                                    <label class="form-check-label" for="data">Data</label>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Struktur Organisasi" id="struktur">
-                            <label class="form-check-label" for="struktur">Struktur Organisasi</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Sistem Teknologi" id="teknologi">
-                            <label class="form-check-label" for="teknologi">Sistem Teknologi</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Sumber Daya Manusia" id="sdm">
-                            <label class="form-check-label" for="sdm">Sumber Daya Manusia</label>
+                        <div class="row mb-2">
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Perangkat Lunak" id="perangkat_lunak">
+                                    <label class="form-check-label" for="perangkat_lunak">Perangkat Lunak</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Perangkat Keras" id="perangkat_keras">
+                                    <label class="form-check-label" for="perangkat_keras">Perangkat Keras</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Layanan" id="layanan">
+                                    <label class="form-check-label" for="layanan">Layanan</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Keamanan" id="keamanan">
+                                    <label class="form-check-label" for="keamanan">Keamanan</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="lingkup_perubahan[]" value="Arsitektur" id="arsitektur">
+                                    <label class="form-check-label" for="arsitektur">Arsitektur</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

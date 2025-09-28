@@ -58,9 +58,9 @@
         </tr>
         <tr>
             <th>Lingkup Perubahan</th>
-            <td colspan="2">{{ implode(', ', $dokumen->lingkup_perubahan) }}</td>
+            <td colspan="2" style="word-wrap: break-word; white-space: normal;">{{ implode(', ', $dokumen->lingkup_perubahan) }}</td>
             <th>Penyusun</th>
-            <td colspan="2">{!! $dokumen->penyusun !!}</td>
+            <td colspan="2" style="word-wrap: break-word; white-space: normal;">{!! $dokumen->penyusun !!}</td>
         </tr>
         <tr>
             <th>Target Penyelesaian</th>
