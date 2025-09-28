@@ -313,7 +313,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <i class="fas fa-file-contract"></i>Kesbangpol
+                <i class="fas fa-file-contract"></i>DocManager
             </a>
             
             <div class="user-info">
