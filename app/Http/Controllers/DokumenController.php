@@ -16,12 +16,25 @@ class DokumenController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index()
+    //filter, search, pagination
+    public function index(Request $request)
     {
-        $dokumen = InformasiRencanaPerubahan::where('user_id', auth()->id())
-            ->with(['analisisPerubahan', 'pemantauanPerubahan'])
-            ->latest()
-            ->get();
+        $query = InformasiRencanaPerubahan::where('user_id', auth()->id())
+            ->with(['analisisPerubahan', 'pemantauanPerubahan']);
+
+        if ($request->filled('nomor_dokumen')) {
+            $query->where('nomor_dokumen', 'like', '%' . $request->nomor_dokumen . '%');
+        }
+
+        if ($request->filled('judul')) {
+            $query->where('judul', 'like', '%' . $request->judul . '%');
+        }
+
+        if ($request->filled('tanggal_dokumen')) {
+            $query->whereDate('tanggal_dokumen', $request->tanggal_dokumen);
+        }
+
+        $dokumen = $query->latest()->get();
 
         return view('dokumen.index', compact('dokumen'));
     }
