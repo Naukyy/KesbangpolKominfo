@@ -75,6 +75,9 @@ class DokumenController extends Controller
                 'informasi_rencana_perubahan_id' => $dokumen->id,
                 'deskripsi' => '', // default value
             ]);
+
+            // Dispatch event untuk notifikasi real-time
+            event(new \App\Events\DokumenCreated($dokumen, auth()->user()));
         });
 
         return redirect()->route('dokumen.index')->with('success', 'Dokumen berhasil dibuat');
