@@ -77,6 +77,40 @@
             100% { transform: rotate(360deg); }
         }
         
+        .logo-container {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-blue-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::before {
+            content: 'D';
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-top: 0.5rem;
+        }
+
         .card-header h3 {
             margin: 0;
             font-weight: 700;
@@ -408,6 +442,16 @@
                         <button type="submit" class="btn-login">
                             <i class="fas fa-sign-in-alt me-2"></i>{{ __('Login') }}
                         </button>
+                    </div>
+
+                    <div class="text-center my-3">
+                        <span class="text-muted">atau</span>
+                    </div>
+
+                    <div class="form-group">
+                        <a href="{{ route('login.google') }}" class="btn btn-outline-danger w-100">
+                            <i class="fab fa-google me-2"></i>Login dengan Google
+                        </a>
                     </div>
 
                     <div class="forgot-password text-center">
