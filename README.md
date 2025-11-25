@@ -1,61 +1,127 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Project Overview
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Pengertian
 
-## About Laravel
+Proyek ini adalah aplikasi web berbasis Laravel, sebuah framework PHP yang kuat dan elegan untuk membangun aplikasi web modern. Laravel menyediakan struktur yang terorganisir dan berbagai fitur untuk memudahkan pengembangan aplikasi web yang skalabel dan mudah dipelihara.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tujuan dan Manfaat
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Tujuan utama proyek ini adalah menyediakan sistem manajemen dokumen, analisis perubahan, pemantauan, dan perencanaan pengembangan secara terintegrasi dan efisien. Dengan menggunakan aplikasi ini, organisasi dapat:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Mengelola dokumen-dokumen penting dengan mudah.
+- Melakukan analisis perubahan yang terjadi dalam dokumen.
+- Memantau perkembangan rencana perubahan secara real-time.
+- Mendukung pengambilan keputusan berbasis data dan analisis.
+- Meningkatkan kolaborasi dan transparansi dalam proses pengembangan.
 
-## Learning Laravel
+## Tools dan Teknologi yang Digunakan
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Laravel Framework**: Framework PHP untuk pengembangan aplikasi web dengan arsitektur MVC.
+- **PHP**: Bahasa pemrograman utama aplikasi ini.
+- **MySQL/MariaDB**: Database relasional untuk penyimpanan data.
+- **Composer**: Dependency manager untuk PHP.
+- **Blade Templating Engine**: Engine templating Laravel untuk membangun antarmuka pengguna.
+- **Bootstrap dan Vite**: Digunakan untuk styling dan build assets frontend.
+- **Git**: Version control system untuk manajemen kode sumber.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Metodologi yang Digunakan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Proyek ini dikembangkan menggunakan pendekatan Model-View-Controller (MVC) yang merupakan pola desain perangkat lunak untuk mengorganisir kode aplikasi dengan memisahkan logika bisnis, tampilan, dan pengelolaan data. Laravel sebagai framework MVC mempermudah implementasi metodologi ini.
 
-## Laravel Sponsors
+Selain itu, proyek menggunakan migrasi database untuk pengelolaan skema database yang mudah dan konsisten, serta menggunakan fitur notifikasi dan event broadcasting untuk interaksi real-time antar komponen aplikasi.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Masalah yang Diselesaikan
 
-### Premium Partners
+- Kesulitan dalam pengelolaan dan tracking dokumen yang terus berkembang.
+- Kurangnya transparansi dan pemantauan dalam proses perubahan dan pengembangan.
+- Tantangan dalam menganalisis dan melacak perubahan dokumen untuk pengambilan keputusan.
+- Perlunya sistem terintegrasi yang menggabungkan manajemen dokumen, analisis, dan pemantauan dengan fitur notifikasi.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Fitur-fitur Utama
 
-## Contributing
+- **Manajemen Dokumen**: Membuat, mengedit, menghapus, dan melihat detail dokumen.
+- **Analisis Perubahan**: Menganalisis perubahan yang dilakukan pada dokumen atau data terkait.
+- **Pemantauan Perubahan**: Memantau status dan progres dari perubahan yang direncanakan.
+- **Perencanaan Pengembangan**: Membantu dalam menyusun dan mengelola rencana pengembangan.
+- **Autentikasi dan Otentikasi Pengguna**: Sistem login, registrasi, dan manajemen hak akses pengguna.
+- **Notifikasi Real-time**: Mengirimkan notifikasi terkait dokumen dan perubahan kepada pengguna.
+- **Role-based Access Control**: Pembatasan akses fitur berdasarkan peran pengguna.
+  
+## Cara Instalasi dan Menjalankan Project
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Prasyarat
 
-## Code of Conduct
+- PHP >= 8.x
+- Composer
+- Web server (Apache/Nginx)
+- Database MySQL/MariaDB
+- Node.js dan npm (untuk mengelola assets frontend)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Langkah-langkah Instalasi
 
-## Security Vulnerabilities
+1. Clone repository ini:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+git clone [URL repository]
+cd formulir-kesbangpol3
+```
 
-## License
+2. Install dependensi PHP menggunakan Composer:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+composer install
+```
+
+3. Copy file environment dan sesuaikan konfigurasi:
+
+```bash
+cp .env.example .env
+```
+
+Edit file `.env` dan konfigurasikan database serta pengaturan lain sesuai kebutuhan.
+
+4. Generate application key:
+
+```bash
+php artisan key:generate
+```
+
+5. Jalankan migrasi untuk membuat tabel-tabel di database:
+
+```bash
+php artisan migrate
+```
+
+6. Install dependensi frontend:
+
+```bash
+npm install
+```
+
+7. Build assets frontend:
+
+```bash
+npm run dev
+```
+
+8. Jalankan server lokal:
+
+```bash
+php artisan serve
+```
+
+Aplikasi dapat diakses melalui alamat `http://localhost:8000`.
+
+### Catatan
+
+- Pastikan database sudah dibuat dan konfigurasi dalam `.env` sudah benar.
+- Jika menggunakan server lain seperti XAMPP, sesuaikan konfigurasi virtual host dan database.
+- Untuk mode produksi, gunakan perintah build produksi:
+
+```bash
+npm run build
+```
+
+---
+
+README ini memberikan panduan lengkap bagi pengguna maupun developer untuk memahami, menginstal, dan menjalankan proyek aplikasi berbasis Laravel ini dengan optimal.
