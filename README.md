@@ -18,7 +18,7 @@ Tujuan utama proyek ini adalah menyediakan sistem manajemen dokumen, analisis pe
 
 - **Laravel Framework**: Framework PHP untuk pengembangan aplikasi web dengan arsitektur MVC.
 - **PHP**: Bahasa pemrograman utama aplikasi ini.
-- **MySQL/MariaDB**: Database relasional untuk penyimpanan data.
+- **MySQL**: Database relasional untuk penyimpanan data.
 - **Composer**: Dependency manager untuk PHP.
 - **Blade Templating Engine**: Engine templating Laravel untuk membangun antarmuka pengguna.
 - **Bootstrap dan Vite**: Digunakan untuk styling dan build assets frontend.
