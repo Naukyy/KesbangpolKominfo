@@ -338,9 +338,15 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="header-glow"><i class="fas fa-file-alt me-2"></i>Daftar Dokumen Perubahan</h4>
-                        <a href="{{ route('dokumen.create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus me-1"></i>Buat Dokumen Baru
-                        </a>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('email.pdf.form') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-envelope me-1"></i>Kirim Dokumen
+                            </a>
+                            <a href="{{ route('dokumen.create') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus me-1"></i>Buat Dokumen Baru
+                            </a>
+                        </div>
                     </div>
                     <div class="card-body">
                         <form method="GET" action="{{ route('dokumen.index') }}" class="row g-3 mb-4">

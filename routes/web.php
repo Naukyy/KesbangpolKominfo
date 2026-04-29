@@ -6,6 +6,7 @@ use App\Http\Controllers\AnalisisController;
 use App\Http\Controllers\PengembanganController;
 use App\Http\Controllers\PemantauanController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EmailDocumentController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -37,4 +38,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('dokumen/{dokuman}/cetak-pdf', [\App\Http\Controllers\DokumenController::class, 'cetakPdf'])
         ->name('dokumen.cetakPdf');
+
+    Route::get('/kirim-pdf', [EmailDocumentController::class, 'showForm'])->name('email.pdf.form');
+    Route::post('/kirim-pdf', [EmailDocumentController::class, 'sendEmail'])->name('email.pdf.send');
 });
