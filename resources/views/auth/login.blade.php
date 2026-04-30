@@ -77,40 +77,6 @@
             100% { transform: rotate(360deg); }
         }
         
-        .logo-container {
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-blue-dark) 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .logo::before {
-            content: 'D';
-            font-size: 3rem;
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .logo-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-top: 0.5rem;
-        }
-
         .card-header h3 {
             margin: 0;
             font-weight: 700;
@@ -165,6 +131,32 @@
             box-shadow: 0 0 0 0.25rem rgba(0, 180, 216, 0.25);
             background-color: white;
         }
+
+        /* --- TAMBAHAN CSS UNTUK ICON MATA --- */
+        .password-wrapper {
+            position: relative;
+        }
+
+        /* Memberikan ruang di sebelah kanan agar teks tidak tertimpa icon */
+        .password-wrapper .form-control {
+            padding-right: 45px; 
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--pastel-blue);
+            transition: color 0.3s ease;
+            z-index: 10;
+        }
+
+        .toggle-password:hover {
+            color: var(--neon-blue);
+        }
+        /* ---------------------------------- */
         
         .form-control.is-invalid {
             border-color: #dc3545;
@@ -332,32 +324,20 @@
         }
         
         @keyframes float {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            25% {
-                transform: translate(20px, 30px) rotate(90deg);
-            }
-            50% {
-                transform: translate(0, 60px) rotate(180deg);
-            }
-            75% {
-                transform: translate(-20px, 30px) rotate(270deg);
-            }
-            100% {
-                transform: translate(0, 0) rotate(360deg);
-            }
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, 30px) rotate(90deg); }
+            50% { transform: translate(0, 60px) rotate(180deg); }
+            75% { transform: translate(-20px, 30px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
         }
         
         @media (max-width: 576px) {
             .login-container {
                 max-width: 100%;
             }
-            
             .card-body {
                 padding: 1.5rem;
             }
-            
             .card-header {
                 padding: 1.5rem 1.5rem 1rem;
             }
@@ -411,9 +391,16 @@
                         <label for="password" class="form-label">
                             <i class="fas fa-key"></i>{{ __('Password') }}
                         </label>
-                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" 
-                               name="password" required autocomplete="current-password"
-                               placeholder="Masukkan kata sandi Anda">
+                        
+                        <div class="password-wrapper">
+                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" 
+                                   name="password" required autocomplete="current-password"
+                                   placeholder="Masukkan kata sandi Anda">
+                            
+                            <span class="toggle-password" id="togglePassword">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </span>
+                        </div>
                         
                         @error('password')
                             <span class="invalid-feedback" role="alert">
@@ -429,10 +416,10 @@
                                 <label class="form-check-label" for="remember">
                                     {{ __('Remember Me') }}
                                 </label>
-                            </div class="forgot-password">
+                            </div>
                             @if (Route::has('password.request'))
                                 <a href="{{ route('password.request') }}" class="text-decoration-none" style="color: var(--neon-blue-dark);">
-                                    <i class="fas fa-question-circle"></i>{{ __('Forgot Your Password?') }}
+                                    <i class="fas fa-question-circle me-1"></i>{{ __('Forgot Your Password?') }}
                                 </a>
                             @endif
                         </div>
@@ -449,12 +436,12 @@
                     </div>
 
                     <div class="form-group">
-                        <a href="{{ route('login.google') }}" class="btn btn-outline-danger w-100">
+                        <a href="{{ route('login.google') }}" class="btn btn-outline-danger w-100 py-2 rounded-3">
                             <i class="fab fa-google me-2"></i>Login dengan Google
                         </a>
                     </div>
 
-                    <div class="forgot-password text-center">
+                    <div class="forgot-password text-center mt-3">
                         <a href="{{ route('register') }}">
                             <i class="fas fa-user-plus"></i>Daftar Akun Baru
                         </a>
@@ -478,6 +465,27 @@
                 }
             });
         });
+
+        // --- TAMBAHAN JS UNTUK TOGGLE PASSWORD ---
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordInput = document.querySelector('#password');
+        const eyeIcon = document.querySelector('#eyeIcon');
+
+        togglePassword.addEventListener('click', function () {
+            // Cek tipe input saat ini, lalu ubah ke teks atau password
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Ubah icon FontAwesome (mata terbuka / mata tertutup)
+            if (type === 'password') {
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            } else {
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            }
+        });
+        // -----------------------------------------
         
         // Validasi form sebelum submit
         document.querySelector('form').addEventListener('submit', function(e) {
