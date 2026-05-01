@@ -51,10 +51,13 @@ class RegisterController extends Controller
         $this->validator($request->all())->validate();
 
         $user = $this->create($request->all());
+        
+        // Trigger event to send verification email
+        event(new \Illuminate\Auth\Events\Registered($user));
 
         // Do not log in the user automatically
 
-        return redirect($this->redirectPath())->with('status', 'Registration successful! Please log in.');
+        return redirect($this->redirectPath())->with('status', 'Registration successful! Please check your email to verify your account before logging in.');
     }
 
     /**
@@ -67,7 +70,8 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            // Menggunakan dns agar mengecek apakah domain email valid dan bisa menerima pesan (cegah akun dummy)
+            'email' => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }

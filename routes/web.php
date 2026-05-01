@@ -12,12 +12,12 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('login/google', [App\Http\Controllers\Auth\LoginController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('login/google/callback', [App\Http\Controllers\Auth\LoginController::class, 'handleGoogleCallback']);
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DokumenController::class, 'index'])->name('dashboard');
     Route::resource('dokumen', DokumenController::class);
 

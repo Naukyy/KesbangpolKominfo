@@ -66,14 +66,17 @@ class LoginController extends Controller
                 $user = User::where('email', $googleUser->email)->first();
 
                 if (!$user) {
-                    $user = User::create([
-                        'name' => $googleUser->name,
-                        'email' => $googleUser->email,
-                        'google_id' => $googleUser->id,
-                        'password' => bcrypt(uniqid()), // Random password since Google handles auth
-                    ]);
+                    $user = new User();
+                    $user->name = $googleUser->name;
+                    $user->email = $googleUser->email;
+                    $user->google_id = $googleUser->id;
+                    $user->password = bcrypt(uniqid()); // Random password since Google handles auth
+                    $user->email_verified_at = now(); // Otomatis terverifikasi karena via Google
+                    $user->save();
                 } else {
-                    $user->update(['google_id' => $googleUser->id]);
+                    $user->google_id = $googleUser->id;
+                    $user->email_verified_at = $user->email_verified_at ?? now(); // Jika sebelumnya belum verified, tandai verified
+                    $user->save();
                 }
             }
 
