@@ -5,6 +5,7 @@ use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\AnalisisController;
 use App\Http\Controllers\PengembanganController;
 use App\Http\Controllers\PemantauanController;
+use App\Http\Controllers\AiGeneratorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailDocumentController;
 
@@ -41,4 +42,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/kirim-pdf', [EmailDocumentController::class, 'showForm'])->name('email.pdf.form');
     Route::post('/kirim-pdf', [EmailDocumentController::class, 'sendEmail'])->name('email.pdf.send');
+
+    // ── AI Auto-Generate Per Field ───────────────────────────────────────────
+    Route::post('dokumen/{dokuman}/ai-generate-field', [AiGeneratorController::class, 'generatePerField'])
+        ->name('ai.generate.field');
+
+    // ── AI Auto-Generate Plain Text ──────────────────────────────────────────
+    Route::post('/ai/generate-template', [AiGeneratorController::class, 'generateTemplate']);
 });

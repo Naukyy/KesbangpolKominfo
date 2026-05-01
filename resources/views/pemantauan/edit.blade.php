@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Edit Pemantauan Perubahan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -214,7 +215,39 @@
         .header-glow {
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
         }
-        
+
+        /* ── AI Generate Styles ─────────────────────────────────────── */
+        .btn-ai {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #ec4899 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .btn-ai:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.55); color: white; }
+        .btn-ai:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .btn-ai .spinner-border { width: 0.9rem; height: 0.9rem; border-width: 2px; }
+        .ai-overlay { display: none; position: fixed; inset: 0; background: rgba(15,10,35,0.65); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; }
+        .ai-overlay.active { display: flex; }
+        .ai-overlay-card { background: linear-gradient(135deg, #1e1b4b, #312e81); border: 1px solid rgba(167,139,250,0.4); border-radius: 16px; padding: 2.5rem 3rem; text-align: center; color: white; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .ai-pulse { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #7c3aed, #ec4899); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem; font-size: 1.8rem; animation: aiPulse 1.5s ease-in-out infinite; }
+        @keyframes aiPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.6); transform: scale(1); } 50% { box-shadow: 0 0 0 15px rgba(124,58,237,0); transform: scale(1.05); } }
+        .ai-overlay-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.3rem; }
+        .ai-overlay-sub { font-size: 0.85rem; opacity: 0.7; }
+        .ai-toast { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 10000; min-width: 300px; border-radius: 10px; padding: 1rem 1.25rem; color: white; font-weight: 500; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s; }
+        .ai-toast.show { opacity: 1; }
+        .ai-toast.success { background: linear-gradient(135deg, #059669, #10b981); }
+        .ai-toast.error   { background: linear-gradient(135deg, #dc2626, #ef4444); }
+
         .person-info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -319,7 +352,13 @@
                                             </select>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="keterangan" class="form-label">Keterangan</label>
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <label for="keterangan" class="form-label mb-0">Keterangan</label>
+                                                <button type="button" class="btn-ai-field"
+                                                        onclick="generateTemplateAI('keterangan', 'keterangan', this)">
+                                                    <i class="fas fa-robot"></i> AI Generate
+                                                </button>
+                                            </div>
                                             <textarea name="keterangan" id="keterangan" class="form-control" placeholder="Masukkan keterangan status...">{{ old('keterangan', $pemantauan->keterangan) }}</textarea>
                                         </div>
                                     </div>
@@ -328,7 +367,13 @@
                                     <div class="form-section">
                                         <h5><i class="fas fa-user-check"></i>Penugasan</h5>
                                         <div class="mb-3">
-                                            <label for="penugasan" class="form-label">Penugasan</label>
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <label for="penugasan" class="form-label mb-0">Penugasan</label>
+                                                <button type="button" class="btn-ai-field"
+                                                        onclick="generateTemplateAI('penugasan', 'penugasan', this)">
+                                                    <i class="fas fa-robot"></i> AI Generate
+                                                </button>
+                                            </div>
                                             <textarea name="penugasan" id="penugasan" class="form-control" placeholder="Masukkan detail penugasan...">{{ old('penugasan', $pemantauan->penugasan) }}</textarea>
                                         </div>
                                     </div>
@@ -404,68 +449,125 @@
         </div>
     </div>
 
+    <!-- AI Loading Overlay -->
+    <div class="ai-overlay" id="ai-overlay">
+        <div class="ai-overlay-card">
+            <div class="ai-pulse">✨</div>
+            <div class="ai-overlay-title" id="ai-overlay-title">AI sedang menyusun pemantauan...</div>
+            <div class="ai-overlay-sub" id="ai-overlay-sub">Mengidentifikasi metrics dan KPI yang relevan</div>
+        </div>
+    </div>
+    <div class="ai-toast" id="ai-toast"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Tambahkan efek hover pada card
         document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-5px)';
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
+            card.addEventListener('mouseenter', function() { this.style.transform = 'translateY(-5px)'; });
+            card.addEventListener('mouseleave', function() { this.style.transform = 'translateY(0)'; });
         });
-        
-        // Tambahkan efek pada form fields
         document.querySelectorAll('.form-control, .form-select').forEach(field => {
-            field.addEventListener('focus', function() {
-                this.parentElement.classList.add('focused');
-            });
-            
-            field.addEventListener('blur', function() {
-                this.parentElement.classList.remove('focused');
-            });
+            field.addEventListener('focus',  function() { this.parentElement.classList.add('focused'); });
+            field.addEventListener('blur',   function() { this.parentElement.classList.remove('focused'); });
         });
-        
-        // Update visual status berdasarkan pilihan
+
+        // Status badge (existing logic)
         const statusSelect = document.getElementById('status');
         const statusIndicator = document.createElement('div');
         statusIndicator.className = 'mt-2';
         statusSelect.parentNode.appendChild(statusIndicator);
-        
         function updateStatusIndicator() {
             const value = statusSelect.value;
-            let badgeClass = '';
-            let badgeText = '';
-            
+            let badgeClass = '', badgeText = '';
             switch(value) {
-                case 'Disetujui':
-                    badgeClass = 'status-approved';
-                    badgeText = 'Status: Disetujui';
-                    break;
-                case 'Ditunda':
-                    badgeClass = 'status-pending';
-                    badgeText = 'Status: Ditunda';
-                    break;
-                case 'Ditolak':
-                    badgeClass = 'status-rejected';
-                    badgeText = 'Status: Ditolak';
-                    break;
-                default:
-                    badgeClass = '';
-                    badgeText = '';
+                case 'Disetujui': badgeClass = 'status-approved'; badgeText = 'Status: Disetujui'; break;
+                case 'Ditunda':   badgeClass = 'status-pending';  badgeText = 'Status: Ditunda';   break;
+                case 'Ditolak':   badgeClass = 'status-rejected'; badgeText = 'Status: Ditolak';   break;
+                default: badgeClass = ''; badgeText = '';
             }
-            
-            if (badgeText) {
-                statusIndicator.innerHTML = `<span class="status-badge ${badgeClass}">${badgeText}</span>`;
-            } else {
-                statusIndicator.innerHTML = '';
+            statusIndicator.innerHTML = badgeText ? `<span class="status-badge ${badgeClass}">${badgeText}</span>` : '';
+        }
+        statusSelect.addEventListener('change', updateStatusIndicator);
+        updateStatusIndicator();
+
+        // ── Tambahkan style btn-ai-field ──
+        const style = document.createElement('style');
+        style.textContent = `
+            .btn-ai-field {
+                background: linear-gradient(135deg, var(--neon-blue), var(--neon-blue-dark));
+                color: white; border: none; border-radius: 20px;
+                padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 600;
+                cursor: pointer; transition: all 0.25s ease;
+                box-shadow: 0 2px 8px var(--shadow);
+                display: inline-flex; align-items: center; gap: 4px;
+                white-space: nowrap; flex-shrink: 0;
+            }
+            .btn-ai-field:hover:not(:disabled) {
+                background: linear-gradient(135deg, var(--neon-blue-dark), #0077b6);
+                transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,180,216,0.4);
+                color: white;
+            }
+            .btn-ai-field:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+            .ai-filled { border-color: var(--neon-blue) !important; background-color: var(--pastel-blue-lighter) !important; transition: all 0.4s ease !important; }
+        `;
+        document.head.appendChild(style);
+
+        // ── Config ────────────────────────────────────────────────────────────
+        let temaSistem = "{{ $dokuman->judul ?? '' }}";
+
+        // ── Toast ─────────────────────────────────────────────────────────────
+        let toastTimer;
+        function showToast(msg, type = 'success') {
+            clearTimeout(toastTimer);
+            const t = document.getElementById('ai-toast');
+            t.className = `ai-toast ${type} show`;
+            t.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'clock' : 'exclamation-circle'}"></i> ${msg}`;
+            toastTimer = setTimeout(() => t.classList.remove('show'), 5000);
+        }
+
+        // ── Core per-field generate ───────────────────────────────────────────
+        async function generateTemplateAI(kategori, targetId, btnElement) {
+            const originalText = btnElement.innerHTML;
+            btnElement.innerHTML = '⏳ Menyusun Template...';
+            btnElement.disabled = true;
+
+            const textarea = document.getElementById(targetId);
+            if(textarea) textarea.style.opacity = '0.5';
+
+            try {
+                const response = await fetch('{{ url("/ai/generate-template") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        kategori: kategori,
+                        temaSistem: temaSistem
+                    })
+                });
+
+                const text = await response.text();
+
+                if (!response.ok) {
+                    throw new Error(text || 'Gagal menghubungi server');
+                }
+                
+                if(textarea) {
+                    textarea.value = text;
+                    textarea.classList.add('ai-filled');
+                    setTimeout(() => textarea.classList.remove('ai-filled'), 2000);
+                }
+                showToast(`✨ Template "${kategori}" berhasil disusun!`, 'success');
+
+            } catch (error) {
+                console.error('Error:', error);
+                showToast(error.message || 'Terjadi kesalahan saat menyusun template.', 'error');
+            } finally {
+                btnElement.innerHTML = originalText;
+                btnElement.disabled = false;
+                if(textarea) textarea.style.opacity = '1';
             }
         }
-        
-        statusSelect.addEventListener('change', updateStatusIndicator);
-        updateStatusIndicator(); // Initialize on page load
     </script>
 </body>
 </html>
