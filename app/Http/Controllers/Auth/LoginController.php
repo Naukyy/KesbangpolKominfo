@@ -30,7 +30,23 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dashboard';
+    public function redirectTo() {
+        if (auth()->user() && auth()->user()->role === 'admin') {
+            return '/admin/pegawai';
+        }
+        return '/dashboard';
+    }
+
+    /**
+     * The user has been logged in.
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->role === 'admin') {
+            return redirect('/admin/pegawai');
+        }
+        return redirect('/dashboard');
+    }
 
     /**
      * Create a new controller instance.
@@ -88,3 +104,4 @@ class LoginController extends Controller
         }
     }
 }
+

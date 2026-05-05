@@ -43,6 +43,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/kirim-pdf', [EmailDocumentController::class, 'showForm'])->name('email.pdf.form');
     Route::post('/kirim-pdf', [EmailDocumentController::class, 'sendEmail'])->name('email.pdf.send');
 
+    // Admin routes - no verified required, protected by controller
+    Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+        Route::resource('pegawai', \App\Http\Controllers\PegawaiController::class);
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->only(['index', 'destroy']);
+    });
+
     // ── AI Auto-Generate Per Field ───────────────────────────────────────────
     Route::post('dokumen/{dokuman}/ai-generate-field', [AiGeneratorController::class, 'generatePerField'])
         ->name('ai.generate.field');

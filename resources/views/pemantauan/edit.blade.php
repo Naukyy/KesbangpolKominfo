@@ -383,25 +383,18 @@
                             <div class="form-section">
                                 <h5><i class="fas fa-user-tie"></i>Informasi Pengusul</h5>
                                 <div class="person-info-grid">
-                                    <div class="person-card">
-                                        <h6><i class="fas fa-id-card me-2"></i>Jabatan</h6>
+<div class="person-card">
+                                        <h6><i class="fas fa-users me-2"></i>Pilih Pengusul</h6>
                                         <div class="mb-3">
-                                            <label for="diusulkan_oleh_jabatan" class="form-label">Jabatan Pengusul</label>
-                                            <input type="text" name="diusulkan_oleh_jabatan" id="diusulkan_oleh_jabatan" class="form-control" value="{{ old('diusulkan_oleh_jabatan', $pemantauan->diusulkan_oleh_jabatan) }}" placeholder="Masukkan jabatan pengusul">
-                                        </div>
-                                    </div>
-                                    <div class="person-card">
-                                        <h6><i class="fas fa-user me-2"></i>Nama</h6>
-                                        <div class="mb-3">
-                                            <label for="diusulkan_oleh_nama" class="form-label">Nama Pengusul</label>
-                                            <input type="text" name="diusulkan_oleh_nama" id="diusulkan_oleh_nama" class="form-control" value="{{ old('diusulkan_oleh_nama', $pemantauan->diusulkan_oleh_nama) }}" placeholder="Masukkan nama pengusul">
-                                        </div>
-                                    </div>
-                                    <div class="person-card">
-                                        <h6><i class="fas fa-fingerprint me-2"></i>NIP</h6>
-                                        <div class="mb-3">
-                                            <label for="diusulkan_oleh_nip" class="form-label">NIP Pengusul</label>
-                                            <input type="text" name="diusulkan_oleh_nip" id="diusulkan_oleh_nip" class="form-control" value="{{ old('diusulkan_oleh_nip', $pemantauan->diusulkan_oleh_nip) }}" placeholder="Masukkan NIP pengusul">
+                                            <label for="diusulkan_oleh_id" class="form-label">Pengusul</label>
+                                            <select name="diusulkan_oleh_id" id="diusulkan_oleh_id" class="form-select">
+                                                <option value="">- Pilih Pengusul -</option>
+                                                @foreach($pegawai as $p)
+                                                    <option value="{{ $p->id }}" {{ (old('diusulkan_oleh_id', $pemantauan->diusulkan_oleh_id ?? '') == $p->id ? 'selected' : '') }}>
+                                                        {{ $p->nama }} - {{ $p->nip }} ({{ $p->jabatan }})
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -410,25 +403,18 @@
                             <div class="form-section">
                                 <h5><i class="fas fa-user-shield"></i>Informasi Penyetuju</h5>
                                 <div class="person-info-grid">
-                                    <div class="person-card">
-                                        <h6><i class="fas fa-id-card me-2"></i>Jabatan</h6>
+<div class="person-card">
+                                        <h6><i class="fas fa-user-check me-2"></i>Pilih Penyetuju</h6>
                                         <div class="mb-3">
-                                            <label for="disetujui_oleh_jabatan" class="form-label">Jabatan Penyetuju</label>
-                                            <input type="text" name="disetujui_oleh_jabatan" id="disetujui_oleh_jabatan" class="form-control" value="{{ old('disetujui_oleh_jabatan', $pemantauan->disetujui_oleh_jabatan) }}" placeholder="Masukkan jabatan penyetuju">
-                                        </div>
-                                    </div>
-                                    <div class="person-card">
-                                        <h6><i class="fas fa-user me-2"></i>Nama</h6>
-                                        <div class="mb-3">
-                                            <label for="disetujui_oleh_nama" class="form-label">Nama Penyetuju</label>
-                                            <input type="text" name="disetujui_oleh_nama" id="disetujui_oleh_nama" class="form-control" value="{{ old('disetujui_oleh_nama', $pemantauan->disetujui_oleh_nama) }}" placeholder="Masukkan nama penyetuju">
-                                        </div>
-                                    </div>
-                                    <div class="person-card">
-                                        <h6><i class="fas fa-fingerprint me-2"></i>NIP</h6>
-                                        <div class="mb-3">
-                                            <label for="disetujui_oleh_nip" class="form-label">NIP Penyetuju</label>
-                                            <input type="text" name="disetujui_oleh_nip" id="disetujui_oleh_nip" class="form-control" value="{{ old('disetujui_oleh_nip', $pemantauan->disetujui_oleh_nip) }}" placeholder="Masukkan NIP penyetuju">
+                                            <label for="disetujui_oleh_id" class="form-label">Penyetuju</label>
+                                            <select name="disetujui_oleh_id" id="disetujui_oleh_id" class="form-select">
+                                                <option value="">- Pilih Penyetuju -</option>
+                                                @foreach($pegawai as $p)
+                                                    <option value="{{ $p->id }}" {{ (old('disetujui_oleh_id', $pemantauan->disetujui_oleh_id ?? '') == $p->id ? 'selected' : '') }}>
+                                                        {{ $p->nama }} - {{ $p->nip }} ({{ $p->jabatan }})
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

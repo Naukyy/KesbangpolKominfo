@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        User::where('role', 'admin')
+            ->update([
+                'email_verified_at' => now(),
+            ]);
+    }
+
+    public function down(): void
+    {
+        User::where('role', 'admin')
+            ->update([
+                'email_verified_at' => null,
+            ]);
+    }
+};
+?>
+

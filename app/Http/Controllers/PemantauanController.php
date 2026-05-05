@@ -17,7 +17,8 @@ class PemantauanController extends Controller
         $this->authorize('view', $dokuman);
         
         $pemantauan = $dokuman->pemantauanPerubahan;
-        return view('pemantauan.edit', compact('dokuman', 'pemantauan'));
+        $pegawai = \App\Models\Pegawai::all();
+        return view('pemantauan.edit', compact('dokuman', 'pemantauan', 'pegawai'));
     }
 
     public function update(Request $request, InformasiRencanaPerubahan $dokuman)
@@ -28,12 +29,8 @@ class PemantauanController extends Controller
             'status' => 'nullable|in:Disetujui,Ditunda,Ditolak',
             'keterangan' => 'nullable|string',
             'penugasan' => 'nullable|string',
-            'diusulkan_oleh_jabatan' => 'nullable|string|max:100',
-            'diusulkan_oleh_nama' => 'nullable|string|max:100',
-            'diusulkan_oleh_nip' => 'nullable|string|max:50',
-            'disetujui_oleh_jabatan' => 'nullable|string|max:100',
-            'disetujui_oleh_nama' => 'nullable|string|max:100',
-            'disetujui_oleh_nip' => 'nullable|string|max:50'
+            'diusulkan_oleh_id' => 'nullable|exists:pegawais,id',
+            'disetujui_oleh_id' => 'nullable|exists:pegawais,id'
         ]);
 
         $dokuman->pemantauanPerubahan->update($validated);

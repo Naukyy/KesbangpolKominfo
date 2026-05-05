@@ -17,13 +17,49 @@ class PemantauanPerubahan extends Model
         'status',
         'keterangan',
         'penugasan',
-        'diusulkan_oleh_jabatan',
-        'diusulkan_oleh_nama',
-        'diusulkan_oleh_nip',
-        'disetujui_oleh_jabatan',
-        'disetujui_oleh_nama',
-        'disetujui_oleh_nip'
+        'diusulkan_oleh_id',
+        'disetujui_oleh_id'
     ];
+
+    public function diusulkanOleh()
+    {
+        return $this->belongsTo(Pegawai::class, 'diusulkan_oleh_id');
+    }
+
+    public function disetujuiOleh()
+    {
+        return $this->belongsTo(Pegawai::class, 'disetujui_oleh_id');
+    }
+
+    public function getDiusulkanOlehNamaAttribute()
+    {
+        return $this->diusulkanOleh?->nama;
+    }
+
+    public function getDiusulkanOlehNipAttribute()
+    {
+        return $this->diusulkanOleh?->nip;
+    }
+
+    public function getDiusulkanOlehJabatanAttribute()
+    {
+        return $this->diusulkanOleh?->jabatan;
+    }
+
+    public function getDisetujuiOlehNamaAttribute()
+    {
+        return $this->disetujuiOleh?->nama;
+    }
+
+    public function getDisetujuiOlehNipAttribute()
+    {
+        return $this->disetujuiOleh?->nip;
+    }
+
+    public function getDisetujuiOlehJabatanAttribute()
+    {
+        return $this->disetujuiOleh?->jabatan;
+    }
 
     public function informasiRencanaPerubahan()
     {

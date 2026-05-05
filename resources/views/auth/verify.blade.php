@@ -299,11 +299,20 @@
                     </button>
                 </form>
 
-                <div class="back-to-login">
-                    <a href="{{ route('login') }}">
-                        <i class="fas fa-arrow-left me-1"></i>Kembali ke halaman login
+                @auth
+                <form method="POST" action="{{ route('logout') }}" class="mt-3">
+                    @csrf
+                    <button type="submit" class="btn btn-resend w-100">
+                        <i class="fas fa-arrow-left me-2"></i>Logout & Kembali ke Login
+                    </button>
+                </form>
+                @else
+                <div class="back-to-login mt-3">
+                    <a href="{{ route('login') }}" class="btn btn-outline-primary w-100 py-2">
+                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Login
                     </a>
                 </div>
+                @endauth
             </div>
         </div>
     </div>

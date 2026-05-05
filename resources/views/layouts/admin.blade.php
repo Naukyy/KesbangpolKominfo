@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Formulir Kesbangpol - Admin')</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>@yield('title', 'Admin Panel')</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -27,7 +27,7 @@
         }
         
         /* Sidebar */
-        .sidebar {
+.sidebar {
             height: 100vh;
             background: linear-gradient(180deg, var(--neon-blue-dark) 0%, var(--neon-blue) 100%);
             box-shadow: 2px 0 20px rgba(0, 180, 216, 0.2);
@@ -53,7 +53,6 @@
             font-size: 1.4rem;
             display: flex;
             align-items: center;
-            text-decoration: none;
         }
         
         .sidebar .sidebar-brand i {
@@ -67,7 +66,6 @@
             border-left: 4px solid transparent;
             transition: all 0.3s ease;
             font-weight: 500;
-            text-decoration: none;
         }
         
         .sidebar-nav .nav-link:hover,
@@ -78,7 +76,7 @@
         }
         
         /* Top Navbar */
-        .top-navbar {
+.top-navbar {
             background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-blue-dark) 100%);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             padding: 1rem 1.5rem;
@@ -117,8 +115,8 @@
             transform: translateY(-2px);
         }
         
-        /* Main Content */
-        .main-content {
+        /* Main Content -->
+.main-content {
             margin-left: 250px;
             margin-top: 70px;
             padding: 2rem;
@@ -147,8 +145,48 @@
             padding: 1.5rem;
         }
         
+        .card-header h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-blue-dark) 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
+        }
+        
+        .table thead th {
+            background: linear-gradient(135deg, var(--pastel-blue) 0%, var(--neon-blue-light) 100%);
+            color: var(--text-dark);
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(167, 199, 231, 0.2);
+        }
+        
+        .btn-sm {
+            border-radius: 6px;
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+        }
+        
         /* Responsive */
-        @media (max-width: 992px) {
+@media (max-width: 992px) {
             .sidebar {
                 transform: translateX(-100%);
             }
@@ -171,17 +209,18 @@
             }
         }
         
+        /* Mobile menu toggle */
         .menu-toggle {
             display: none;
-            color: white;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
         }
         
         @media (max-width: 992px) {
             .menu-toggle {
                 display: block;
+                color: white;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -190,35 +229,25 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <a class="sidebar-brand" href="{{ route('admin.dashboard') }}">
+            <a class="sidebar-brand" href="/admin/dashboard">
                 <i class="fas fa-shield-alt"></i>
                 Admin Panel
             </a>
         </div>
         <ul class="nav flex-column sidebar-nav mt-3">
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="/admin/dashboard">
                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.pegawai.*') ? 'active' : '' }}" href="{{ route('admin.pegawai.index') }}">
+                <a class="nav-link {{ request()->routeIs('admin.pegawai.*') ? 'active' : '' }}" href="/admin/pegawai">
                     <i class="fas fa-users me-2"></i> Data Pegawai
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="/admin/users">
                     <i class="fas fa-user-cog me-2"></i> Akun Pengguna
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-chart-bar me-2"></i> Laporan
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-cog me-2"></i> Pengaturan
                 </a>
             </li>
         </ul>
@@ -249,27 +278,15 @@
     <!-- Main Content -->
     <main class="main-content">
         @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <div class="alert alert-success mb-4">
                 {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-        
-        @if($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                <ul class="mb-0">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
         
         @yield('content')
     </main>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -295,4 +312,3 @@
     @stack('scripts')
 </body>
 </html>
-
