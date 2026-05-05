@@ -216,11 +216,6 @@
                     <i class="fas fa-chart-bar me-2"></i> Laporan
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-cog me-2"></i> Pengaturan
-                </a>
-            </li>
         </ul>
     </div>
     
