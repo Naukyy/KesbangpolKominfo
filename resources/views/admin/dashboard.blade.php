@@ -13,23 +13,27 @@
     
     <div class="row g-4 mb-5">
         <div class="col-xl-3 col-md-6">
-            <div class="card h-100">
+            <a href="{{ route('admin.pegawai.index') }}" class="text-decoration-none">
+            <div class="card h-100" style="cursor: pointer; transition: transform 0.2s;">
                 <div class="card-body text-center">
                     <i class="fas fa-users fa-3x text-primary mb-3"></i>
                     <h3 class="card-title">{{ $pegawaiCount ?? 0 }}</h3>
                     <p class="card-text">Total Pegawai</p>
                 </div>
             </div>
+            </a>
         </div>
         
         <div class="col-xl-3 col-md-6">
-            <div class="card h-100">
+            <a href="{{ route('admin.users.index') }}" class="text-decoration-none">
+            <div class="card h-100" style="cursor: pointer; transition: transform 0.2s;">
                 <div class="card-body text-center">
                     <i class="fas fa-user-friends fa-3x text-success mb-3"></i>
                     <h3 class="card-title">{{ $userCount ?? 0 }}</h3>
                     <p class="card-text">Total Pengguna</p>
                 </div>
             </div>
+            </a>
         </div>
         
         <div class="col-xl-3 col-md-6">
