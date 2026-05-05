@@ -389,9 +389,9 @@
                                             <label for="diusulkan_oleh_id" class="form-label">Pengusul</label>
                                             <select name="diusulkan_oleh_id" id="diusulkan_oleh_id" class="form-select">
                                                 <option value="">- Pilih Pengusul -</option>
-                                                @foreach($pegawai as $p)
+                                                @foreach($pegawai->sortBy('nama') as $p)
                                                     <option value="{{ $p->id }}" {{ (old('diusulkan_oleh_id', $pemantauan->diusulkan_oleh_id ?? '') == $p->id ? 'selected' : '') }}>
-                                                        {{ $p->nama }} - {{ $p->nip }} ({{ $p->jabatan }})
+                                                        {{ $p->nama }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -409,9 +409,9 @@
                                             <label for="disetujui_oleh_id" class="form-label">Penyetuju</label>
                                             <select name="disetujui_oleh_id" id="disetujui_oleh_id" class="form-select">
                                                 <option value="">- Pilih Penyetuju -</option>
-                                                @foreach($pegawai as $p)
+                                                @foreach($pegawai->sortBy('nama') as $p)
                                                     <option value="{{ $p->id }}" {{ (old('disetujui_oleh_id', $pemantauan->disetujui_oleh_id ?? '') == $p->id ? 'selected' : '') }}>
-                                                        {{ $p->nama }} - {{ $p->nip }} ({{ $p->jabatan }})
+                                                        {{ $p->nama }}
                                                     </option>
                                                 @endforeach
                                             </select>
