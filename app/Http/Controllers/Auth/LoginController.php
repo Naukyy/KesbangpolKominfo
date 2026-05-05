@@ -32,7 +32,7 @@ class LoginController extends Controller
      */
     public function redirectTo() {
         if (auth()->user() && auth()->user()->role === 'admin') {
-            return '/admin/pegawai';
+            return '/admin/dashboard';
         }
         return '/dashboard';
     }
@@ -43,7 +43,7 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         if ($user->role === 'admin') {
-            return redirect('/admin/pegawai');
+            return redirect('/admin/dashboard');
         }
         return redirect('/dashboard');
     }
