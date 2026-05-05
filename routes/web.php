@@ -47,7 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         Route::resource('pegawai', \App\Http\Controllers\PegawaiController::class);
-        Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->only(['index', 'destroy']);
+Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->only(['index', 'destroy']);
+        Route::get('/laporan', [\App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan.index');
     });
 
     // ── AI Auto-Generate Per Field ───────────────────────────────────────────

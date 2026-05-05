@@ -212,7 +212,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}" href="{{ route('admin.laporan.index') }}">
                     <i class="fas fa-chart-bar me-2"></i> Laporan
                 </a>
             </li>

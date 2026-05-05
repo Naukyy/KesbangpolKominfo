@@ -33,13 +33,15 @@
         </div>
         
         <div class="col-xl-3 col-md-6">
-            <div class="card h-100">
+            <a href="{{ route('admin.laporan.index') }}" class="text-decoration-none">
+            <div class="card h-100" style="cursor: pointer; transition: transform 0.2s;">
                 <div class="card-body text-center">
                     <i class="fas fa-file-alt fa-3x text-info mb-3"></i>
                     <h3 class="card-title">{{ $dokumenCount ?? 0 }}</h3>
                     <p class="card-text">Dokumen</p>
                 </div>
             </div>
+            </a>
         </div>
         
         <div class="col-xl-3 col-md-6">
