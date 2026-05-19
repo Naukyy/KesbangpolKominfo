@@ -6,9 +6,6 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="header-glow mb-0"><i class="fas fa-users-cog me-2"></i>Akun Pengguna</h4>
-        <a href="#" class="btn btn-primary" onclick="alert('Fitur tambah user melalui register');">
-            <i class="fas fa-plus me-1"></i>Tambah User
-        </a>
     </div>
 
     @if($users->isEmpty())
