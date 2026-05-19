@@ -18,6 +18,27 @@
                 <div class="card-header">
                     <h4><i class="fas fa-list me-2"></i>Semua Dokumen oleh Pegawai</h4>
                 </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ route('admin.laporan.index') }}" class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <input type="text" name="nomor_dokumen" class="form-control" placeholder="Cari Nomor Dokumen" value="{{ request('nomor_dokumen') }}">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="judul" class="form-control" placeholder="Cari Judul" value="{{ request('judul') }}">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="date" name="tanggal_dokumen" class="form-control" placeholder="Cari Tanggal" value="{{ request('tanggal_dokumen') }}">
+                        </div>
+                        <div class="col-md-12 text-end">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-search me-1"></i>Cari
+                            </button>
+                            <a href="{{ route('admin.laporan.index') }}" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-times me-1"></i>Reset
+                            </a>
+                        </div>
+                    </form>
+                </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">

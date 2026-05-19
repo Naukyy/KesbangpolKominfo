@@ -11,9 +11,22 @@ class LaporanController extends Controller
 {
     public function index(Request $request)
     {
-        $dokumen = InformasiRencanaPerubahan::with('user')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $query = InformasiRencanaPerubahan::with('user');
+
+        if ($request->filled('nomor_dokumen')) {
+            $query->where('nomor_dokumen', 'like', '%' . $request->nomor_dokumen . '%');
+        }
+
+        if ($request->filled('judul')) {
+            $query->where('judul', 'like', '%' . $request->judul . '%');
+        }
+
+        if ($request->filled('tanggal_dokumen')) {
+            $query->whereDate('tanggal_dokumen', $request->tanggal_dokumen);
+        }
+
+        $dokumen = $query->orderBy('created_at', 'desc')->paginate(10);
+        $dokumen->appends($request->all());
 
         return view('admin.laporan.index', compact('dokumen'));
     }
