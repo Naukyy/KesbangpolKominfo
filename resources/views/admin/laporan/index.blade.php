@@ -29,6 +29,7 @@
                                     <th>Tanggal Dokumen</th>
                                     <th>Judul</th>
                                     <th>Status</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -58,10 +59,15 @@
                                                 <span class="badge bg-warning">Pending</span>
                                             @endif
                                         </td>
+                                        <td>
+                                            <a href="{{ route('admin.laporan.cetakPdf', $item->id) }}" class="btn btn-sm btn-info text-white" target="_blank" title="Cetak PDF">
+                                                <i class="fas fa-print"></i> Cetak
+                                            </a>
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                    <td colspan="6" class="text-center py-4">
+                                    <td colspan="7" class="text-center py-4">
                                             <i class="fas fa-file fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">Belum ada dokumen yang dibuat.</p>
                                         </td>
