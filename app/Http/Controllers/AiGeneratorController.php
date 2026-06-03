@@ -249,107 +249,226 @@ class AiGeneratorController extends Controller
         $kategori = $request->input('kategori');
         $temaSistem = $request->input('temaSistem', 'Sistem Informasi Umum');
 
-        $prompt = "Kamu adalah asisten IT di Diskominfo Singkawang. Buatkan template paragraf untuk mengisi kolom form '{$kategori}' pada aplikasi Permintaan Perubahan Sistem. Tema perubahannya terkait: '{$temaSistem}'.\n"
-                . "Aturan:\n"
-                . "- Sediakan bagian yang rumpang dengan format '[isi sendiri]' atau '[sebutkan dampaknya]' agar user bisa mengetik manual bagian tersebut.\n"
-                . "- Contoh gaya bahasa: 'Terdapat permasalahan pada sistem [isi sendiri] yang dikelola oleh Diskominfo Singkawang, sehingga memerlukan perubahan pada...'\n"
-                . "- HANYA berikan teks template-nya saja, tanpa basa-basi, tanpa markdown formatting yang berlebihan, dan kembalikan sebagai plain text.";
+        // Deteksi apakah tema berkaitan dengan infrastruktur fisik / renovasi / non-aplikasi
+        $isFisik = false;
+        $keywords = ['jembatan', 'renovasi', 'server', 'ruang', 'gedung', 'bangunan', 'kabel', 'listrik', 'ac', 'fisik', 'infrastruktur', 'perbaikan', 'jalan', 'pemeliharaan', 'fasilitas'];
+        foreach ($keywords as $keyword) {
+            if (stripos($temaSistem, $keyword) !== false) {
+                $isFisik = true;
+                break;
+            }
+        }
 
-        $apiKey = env('GEMINI_API_KEY') ?: config('services.gemini.key');
-        $model = config('services.gemini.model', 'gemini-2.0-flash');
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key=" . $apiKey;
+        // Penjelasan deskriptif tiap kategori untuk membantu AI menghasilkan kalimat utuh yang spesifik
+        $kategoriDeskripsi = [
+            'risiko' => 'Risiko teknis atau operasional yang mungkin terjadi selama proses pekerjaan berlangsung.',
+            'deskripsi' => 'Penjelasan lengkap mengenai latar belakang, kebutuhan, dan tujuan pelaksanaan pekerjaan ini.',
+            'dampak' => 'Dampak positif, manfaat jangka panjang, atau efek operasional setelah pekerjaan ini selesai.',
+            'mitigasi' => 'Rencana tindakan konkret untuk mengurangi, meminimalkan, atau mencegah risiko yang teridentifikasi.',
+            'persiapan_deskripsi' => 'Langkah-langkah persiapan teknis, administrasi, koordinasi, atau pemindahan aset sebelum pekerjaan dimulai.',
+            'pelaksanaan_deskripsi' => 'Alur pengerjaan dan detail langkah eksekusi utama saat pekerjaan sedang berlangsung.',
+            'keterangan' => 'Catatan penutup, kondisi evaluasi akhir, atau status pemantauan setelah seluruh pekerjaan selesai.',
+            'penugasan' => 'Detail pembagian tugas, tanggung jawab pengawasan, atau tim pelaksana yang ditunjuk untuk proyek ini.',
+        ];
+
+        $penjelasanKategori = $kategoriDeskripsi[$kategori] ?? 'Penjelasan rinci mengenai aspek pekerjaan tersebut.';
+
+        if ($isFisik) {
+            $prompt = "Kamu adalah asisten pengelola sarana prasarana dan infrastruktur di Diskominfo Singkawang.\n"
+                    . "Buatkan kalimat lengkap dan utuh (dalam Bahasa Indonesia) untuk mengisi kolom '{$kategori}' pada form Permintaan Perubahan/Perbaikan Prasarana.\n"
+                    . "Judul pekerjaan: '{$temaSistem}'.\n"
+                    . "Konteks kolom '{$kategori}': {$penjelasanKategori}\n\n"
+                    . "Aturan penting:\n"
+                    . "1. Buat kalimat yang utuh, logis, dan selesai. Hasilnya harus berupa 1 sampai 2 kalimat saja yang merangkum semua informasi secara padat dan profesional.\n"
+                    . "2. JANGAN gunakan tanda kurung siku, titik-titik, atau rumpang kosong seperti '[isi sendiri]', '[sebutkan]', atau '...' sama sekali. Semua kalimat harus langsung berupa pernyataan nyata yang lengkap dan siap pakai.\n"
+                    . "3. Sesuaikan dengan pekerjaan fisik, renovasi, atau pemeliharaan infrastruktur di Diskominfo Singkawang, bukan perubahan software/aplikasi.\n"
+                    . "4. HANYA berikan teks kalimat hasil generate saja. Jangan ada salam, kata pengantar, tanda kutip pembuka/penutup, atau format markdown. Langsung ke isi kalimat.";
+        } else {
+            $prompt = "Kamu adalah asisten IT di Diskominfo Singkawang.\n"
+                    . "Buatkan kalimat lengkap dan utuh (dalam Bahasa Indonesia) untuk mengisi kolom '{$kategori}' pada form Permintaan Perubahan Sistem Aplikasi.\n"
+                    . "Judul sistem/perubahan: '{$temaSistem}'.\n"
+                    . "Konteks kolom '{$kategori}': {$penjelasanKategori}\n\n"
+                    . "Aturan penting:\n"
+                    . "1. Buat kalimat yang utuh, logis, dan selesai. Hasilnya harus berupa 1 sampai 2 kalimat saja yang merangkum semua informasi secara padat dan profesional.\n"
+                    . "2. JANGAN gunakan tanda kurung siku, titik-titik, atau rumpang kosong seperti '[isi sendiri]', '[sebutkan]', atau '...' sama sekali. Semua kalimat harus langsung berupa pernyataan nyata yang lengkap dan siap pakai.\n"
+                    . "3. Sesuaikan dengan perubahan sistem informasi, database, aplikasi, atau infrastruktur IT di Diskominfo Singkawang.\n"
+                    . "4. HANYA berikan teks kalimat hasil generate saja. Jangan ada salam, kata pengantar, tanda kutip pembuka/penutup, atau format markdown. Langsung ke isi kalimat.";
+        }
+
+        $apiKey = config('services.gemini.key');
+        $model = config('services.gemini.model', 'gemini-2.5-flash');
+
+        if (empty($apiKey) || $apiKey === 'your-gemini-api-key-here') {
+            Log::warning('Gemini API Key is not configured. Falling back to local templates.');
+            return $this->getFallbackResponse($kategori, $temaSistem, $isFisik);
+        }
 
         try {
-            $response = Http::post($url, [
+            $endpoint = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
+            $payload = [
                 'contents' => [
-                    [
-                        'parts' => [
-                            ['text' => $prompt]
-                        ]
-                    ]
-                ]
-            ]);
+                    ['role' => 'user', 'parts' => [['text' => $prompt]]],
+                ],
+                'generationConfig' => [
+                    'temperature'     => 0.65,
+                    'maxOutputTokens' => 512,
+                ],
+            ];
 
-            if ($response->successful()) {
-                $data = $response->json();
-                
-                if (isset($data['candidates'][0]['content']['parts'][0]['text'])) {
-                    $hasilTeks = trim($data['candidates'][0]['content']['parts'][0]['text']);
-                    
-                    // KEMBALIKAN SEBAGAI PLAIN TEXT
-                    return response($hasilTeks, 200)->header('Content-Type', 'text/plain');
-                }
-                
-                Log::error('Gemini API No Text', ['response' => $data]);
-            } else {
-                Log::error('Gemini API Error', ['status' => $response->status(), 'body' => $response->body()]);
+            // Panggil API dengan retry exponential backoff
+            $response = $this->callGeminiWithRetry($endpoint, $payload, maxRetries: 2);
+            $body = $response->json();
+            $hasilTeks = trim($body['candidates'][0]['content']['parts'][0]['text'] ?? '');
+
+            if ($hasilTeks) {
+                // Bersihkan tag markdown code fence jika ada
+                $hasilTeks = preg_replace('/^```[a-z]*\s*/i', '', $hasilTeks);
+                $hasilTeks = preg_replace('/```\s*$/', '', $hasilTeks);
+                $hasilTeks = trim($hasilTeks);
+
+                return response($hasilTeks, 200)->header('Content-Type', 'text/plain');
             }
-            
-            // JIKA TERJADI ERROR APA PUN (429 Limit Habis, 404 Model Not Found, dll)
-            // GUNAKAN FALLBACK TEMPLATE AGAR FITUR TETAP BERJALAN DENGAN MULUS!
-            $fallbacks = [
-                'risiko' => [
-                    "Terdapat risiko operasional pada sistem [isi nama sistem] yang dikelola oleh Diskominfo Singkawang, sehingga memerlukan antisipasi pada [sebutkan antisipasi].",
-                    "Potensi gangguan pada sistem [isi nama sistem] dapat berdampak pada layanan publik Diskominfo Singkawang. Langkah pencegahan yang disarankan adalah [sebutkan pencegahan].",
-                    "Analisis menunjukkan adanya risiko teknis terkait [sebutkan risiko] pada sistem [isi nama sistem]. Hal ini perlu ditangani oleh Diskominfo Singkawang melalui [sebutkan penanganan].",
-                    "Kendala pada sistem [isi nama sistem] berpotensi mengganggu proses bisnis di Diskominfo Singkawang. Diperlukan strategi mitigasi berupa [sebutkan strategi].",
-                ],
-                'deskripsi' => [
-                    "Sistem [isi nama sistem] yang dikelola oleh Diskominfo Singkawang membutuhkan perubahan karena [isi alasan perubahan]. Pelaksanaan perubahan akan dilakukan dengan cara [sebutkan cara].",
-                    "Untuk meningkatkan efisiensi, Diskominfo Singkawang merencanakan pembaruan pada sistem [isi nama sistem]. Fokus utama perubahan adalah [sebutkan fokus perubahan].",
-                    "Perubahan sistem [isi nama sistem] diajukan guna mengatasi masalah [sebutkan masalah]. Diskominfo Singkawang akan melakukan pembaruan pada modul [sebutkan modul].",
-                    "Sesuai kebutuhan layanan Diskominfo Singkawang, sistem [isi nama sistem] akan disesuaikan dengan fitur tambahan berupa [sebutkan fitur].",
-                ],
-                'dampak' => [
-                    "Perubahan pada sistem [isi nama sistem] akan memberikan dampak terhadap [sebutkan pihak yang terdampak] dan proses bisnis di Diskominfo Singkawang, yaitu berupa [sebutkan dampaknya].",
-                    "Implementasi sistem [isi nama sistem] diharapkan dapat mempercepat layanan Diskominfo Singkawang, dengan dampak signifikan pada [sebutkan dampak].",
-                    "Pembaruan ini akan memengaruhi [sebutkan pengguna/sistem lain]. Diskominfo Singkawang memastikan transisi akan berjalan dengan efek [sebutkan efek transisi].",
-                    "Dampak utama dari perubahan sistem [isi nama sistem] adalah penyesuaian pada alur kerja [sebutkan alur], yang akan meningkatkan efektivitas layanan Diskominfo Singkawang.",
-                ],
-                'mitigasi' => [
-                    "Untuk mengurangi risiko pada sistem [isi nama sistem], Diskominfo Singkawang akan melakukan mitigasi berupa [sebutkan langkah mitigasi].",
-                    "Sebagai langkah pengamanan, tim Diskominfo Singkawang telah menyiapkan *backup* sistem [isi nama sistem] dan prosedur [sebutkan prosedur].",
-                    "Strategi mitigasi untuk sistem [isi nama sistem] meliputi [sebutkan strategi awal] dan pemantauan berkala oleh tim teknis Diskominfo Singkawang.",
-                    "Diskominfo Singkawang menerapkan tindakan preventif berupa [sebutkan tindakan] untuk meminimalkan kendala selama transisi sistem [isi nama sistem].",
-                ],
-                'persiapan_deskripsi' => [
-                    "Tahap persiapan perubahan sistem [isi nama sistem] meliputi [sebutkan tahapan], yang akan dikoordinasikan oleh tim Diskominfo Singkawang.",
-                    "Sebelum implementasi, Diskominfo Singkawang akan melakukan [sebutkan kegiatan persiapan] pada sistem [isi nama sistem] untuk memastikan kesiapan infrastruktur.",
-                    "Persiapan teknis untuk sistem [isi nama sistem] mencakup penyediaan [sebutkan kebutuhan teknis] dan uji coba awal di lingkungan Diskominfo Singkawang.",
-                    "Tim pengembang Diskominfo Singkawang menjadwalkan persiapan sistem [isi nama sistem] dengan fokus pada [sebutkan fokus persiapan].",
-                ],
-                'pelaksanaan_deskripsi' => [
-                    "Pelaksanaan perubahan pada sistem [isi nama sistem] dilakukan dengan langkah-langkah [sebutkan langkah-langkah] oleh Diskominfo Singkawang.",
-                    "Proses deployment sistem [isi nama sistem] dijadwalkan pada [sebutkan waktu], dengan tahapan eksekusi berupa [sebutkan tahapan eksekusi] oleh Diskominfo Singkawang.",
-                    "Tim Diskominfo Singkawang akan menerapkan pembaruan sistem [isi nama sistem] melalui metode [sebutkan metode] secara bertahap.",
-                    "Eksekusi teknis untuk perubahan sistem [isi nama sistem] mencakup konfigurasi ulang pada [sebutkan komponen] sesuai standar Diskominfo Singkawang.",
-                ],
-                'keterangan' => [
-                    "Pasca-rilis sistem [isi nama sistem], pemantauan akan difokuskan pada metrik [sebutkan metrik] yang dikelola Diskominfo Singkawang.",
-                    "Sistem [isi nama sistem] saat ini beroperasi dengan status [sebutkan status]. Evaluasi performa akan dilakukan oleh Diskominfo Singkawang.",
-                    "Hasil pantauan awal sistem [isi nama sistem] menunjukkan kondisi [sebutkan kondisi], dan memerlukan tindak lanjut berupa [sebutkan tindak lanjut].",
-                    "Keterangan teknis dari Diskominfo Singkawang mencatat bahwa sistem [isi nama sistem] berjalan normal dengan catatan [sebutkan catatan khusus].",
-                ],
-                'penugasan' => [
-                    "Pemantauan sistem [isi nama sistem] ditugaskan kepada [sebutkan nama/tim] di Diskominfo Singkawang dengan jadwal [sebutkan jadwal].",
-                    "Tim [sebutkan nama tim] dari Diskominfo Singkawang bertanggung jawab untuk mengawasi stabilitas sistem [isi nama sistem] selama fase transisi.",
-                    "Penugasan maintenance sistem [isi nama sistem] diberikan kepada [sebutkan personil] dengan tugas utama [sebutkan tugas spesifik].",
-                    "Koordinasi pemantauan sistem [isi nama sistem] dipegang oleh [sebutkan nama koordinator] dari Diskominfo Singkawang.",
-                ],
-            ];
-            
-            $pilihan = $fallbacks[$kategori] ?? [
-                "Terdapat penyesuaian pada sistem [isi nama sistem] yang dikelola oleh Diskominfo Singkawang. Hal ini berkaitan dengan tema {$temaSistem}.\nBagian ini memerlukan [isi tindakan yang perlu dilakukan] agar dapat [sebutkan tujuan/dampaknya]."
-            ];
-            
-            $fallback = $pilihan[array_rand($pilihan)];
-            
-            // Kembalikan fallback sebagai respon normal (200) agar masuk ke textarea
-            return response($fallback, 200)->header('Content-Type', 'text/plain');
 
+            Log::error('Gemini API No Text', ['response' => $body]);
+
+        } catch (\App\Exceptions\GeminiRateLimitException $e) {
+            Log::warning('Gemini API Rate Limit reached. Falling back to templates.', ['error' => $e->getMessage()]);
+        } catch (\App\Exceptions\GeminiApiException $e) {
+            Log::error('Gemini API Exception. Falling back to templates.', ['error' => $e->getMessage()]);
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            Log::error('Gemini Connection Error. Falling back to templates.', ['error' => $e->getMessage()]);
         } catch (\Exception $e) {
-            Log::error('Gemini Exception', ['error' => $e->getMessage()]);
-            return response("Terjadi kesalahan: " . $e->getMessage(), 500)->header('Content-Type', 'text/plain');
+            Log::error('AI Generate Error. Falling back to templates.', ['error' => $e->getMessage()]);
         }
+
+        return $this->getFallbackResponse($kategori, $temaSistem, $isFisik);
+    }
+
+    /**
+     * Mengembalikan fallback template lokal yang disesuaikan dengan kategori dan tema.
+     */
+    private function getFallbackResponse(string $kategori, string $temaSistem, bool $isFisik)
+    {
+        $fallbacksFisik = [
+            'risiko' => [
+                "Terdapat risiko operasional pada pekerjaan fisik [isi kegiatan] di Diskominfo Singkawang, seperti [sebutkan gangguan operasional/keterlambatan].",
+                "Potensi gangguan keselamatan atau akses selama renovasi [isi area] di Diskominfo Singkawang. Diperlukan penanganan berupa [sebutkan penanganan].",
+                "Analisis menunjukkan adanya risiko teknis terkait pasokan material/alat untuk [isi kegiatan] di Diskominfo Singkawang, sehingga perlu dilakukan [sebutkan antisipasi].",
+                "Kendala cuaca atau logistik berpotensi menghambat perbaikan/renovasi [isi kegiatan] di Diskominfo Singkawang. Langkah mitigasinya adalah [sebutkan mitigasi].",
+            ],
+            'deskripsi' => [
+                "Pekerjaan perbaikan/renovasi fisik [isi kegiatan] di lingkungan Diskominfo Singkawang perlu dilaksanakan untuk mengatasi masalah [sebutkan kerusakan/kendala]. Pekerjaan ini mencakup [sebutkan cakupan pekerjaan].",
+                "Guna menjaga stabilitas operasional, Diskominfo Singkawang merencanakan pemeliharaan/renovasi pada [isi area/fasilitas]. Fokus utama kegiatan ini adalah [sebutkan fokus pekerjaan].",
+                "Usulan renovasi/perbaikan [isi area/infrastruktur] diajukan demi meningkatkan keamanan dan kenyamanan di Diskominfo Singkawang, khususnya pada bagian [sebutkan lokasi spesifik].",
+                "Sesuai kebutuhan pemeliharaan gedung/fasilitas Diskominfo Singkawang, akan dilakukan perbaikan pada [isi area] dengan spesifikasi berupa [sebutkan spesifikasi].",
+            ],
+            'dampak' => [
+                "Pekerjaan perbaikan/renovasi [isi kegiatan] akan berdampak sementara pada aksesibilitas staf dan kenyamanan kerja di Diskominfo Singkawang, khususnya berupa [sebutkan dampaknya].",
+                "Implementasi renovasi [isi area] diharapkan dapat meningkatkan keandalan fasilitas fisik Diskominfo Singkawang, dengan dampak jangka panjang berupa [sebutkan dampak positif].",
+                "Pekerjaan fisik ini akan memengaruhi operasional di sekitar area [sebutkan area]. Diskominfo Singkawang memastikan transisi dan pengamanan berjalan dengan baik.",
+                "Dampak utama dari perbaikan infrastruktur [isi infrastruktur] adalah penyesuaian sementara alur aktivitas pegawai Diskominfo Singkawang di area terkait.",
+            ],
+            'mitigasi' => [
+                "Untuk mengurangi risiko gangguan selama renovasi [isi area], Diskominfo Singkawang akan melakukan mitigasi berupa [sebutkan langkah mitigasi, misal: pembatasan area kerja].",
+                "Sebagai langkah pengamanan, tim Diskominfo Singkawang menyiapkan jalur alternatif/area cadangan selama pekerjaan fisik [isi area] berlangsung.",
+                "Strategi mitigasi untuk perbaikan [isi area/fasilitas] meliputi pelaksanaan pekerjaan di luar jam kerja efektif dan pengawasan berkala oleh pengawas proyek.",
+                "Diskominfo Singkawang menerapkan tindakan preventif berupa [sebutkan tindakan pengamanan] untuk meminimalkan risiko kecelakaan kerja selama renovasi.",
+            ],
+            'persiapan_deskripsi' => [
+                "Tahap persiapan pekerjaan fisik [isi kegiatan] meliputi survei lokasi, pengukuran volume pekerjaan, penyusunan rencana anggaran biaya, dan koordinasi dengan pihak pelaksana.",
+                "Sebelum pekerjaan dimulai, Diskominfo Singkawang akan melakukan pengosongan area [isi area] serta pemindahan barang-barang penting ke tempat yang aman.",
+                "Persiapan teknis untuk renovasi [isi area] mencakup penyediaan material, peralatan pelindung diri (APD), dan pemasangan pembatas area kerja.",
+                "Tim Diskominfo Singkawang menjadwalkan persiapan dengan fokus pada perizinan, penyediaan daya listrik cadangan, dan sosialisasi kepada pegawai di area sekitar.",
+            ],
+            'pelaksanaan_deskripsi' => [
+                "Pelaksanaan perbaikan fisik [isi kegiatan] dilakukan melalui tahapan pembongkaran bagian yang rusak, pemasangan struktur baru, finishing, dan pembersihan sisa material.",
+                "Proses pengerjaan fisik [isi area] dijadwalkan secara bertahap dimulai dari [sebutkan tahap awal] hingga [sebutkan tahap akhir] oleh kontraktor/pelaksana.",
+                "Pekerjaan renovasi [isi area] dilaksanakan sesuai gambar rencana dengan fokus pada ketepatan spesifikasi bahan dan waktu pengerjaan.",
+                "Eksekusi perbaikan mencakup instalasi ulang komponen [sebutkan komponen] dan pengujian kekuatan/kelayakan struktur setelah selesai dikerjakan.",
+            ],
+            'keterangan' => [
+                "Pasca-selesainya perbaikan [isi kegiatan], pemantauan akan difokuskan pada kekuatan struktur, kerapihan hasil pekerjaan, dan fungsi utilitas (listrik/air/AC) di area terkait.",
+                "Kondisi fisik area [isi area] setelah perbaikan akan dievaluasi kelayakannya oleh tim pengawas Diskominfo Singkawang.",
+                "Hasil pemantauan berkala menunjukkan bahwa hasil renovasi [isi area] berada dalam kondisi baik dan tidak ditemukan adanya kerusakan lanjutan.",
+                "Catatan akhir pemeriksaan fisik menyimpulkan bahwa pekerjaan perbaikan [isi kegiatan] telah selesai 100% dan memenuhi standar teknis.",
+            ],
+            'penugasan' => [
+                "Pengawasan pekerjaan fisik [isi kegiatan] ditugaskan kepada [sebutkan nama pengawas] dari Diskominfo Singkawang untuk memastikan kesesuaian dengan rencana kerja.",
+                "Tim Sarana dan Prasarana Diskominfo Singkawang bertanggung jawab memantau pembersihan area setelah renovasi selesai dilakukan.",
+                "Pemeliharaan berkala pasca-renovasi ditugaskan kepada [sebutkan nama/tim] dengan jadwal pemeriksaan rutin setiap [sebutkan periode].",
+                "Koordinasi pelaporan kemajuan pekerjaan dipegang oleh [sebutkan nama penanggung jawab] dari pihak Diskominfo Singkawang.",
+            ],
+        ];
+
+        $fallbacksSistem = [
+            'risiko' => [
+                "Terdapat risiko operasional pada sistem [isi nama sistem] yang dikelola oleh Diskominfo Singkawang, sehingga memerlukan antisipasi pada [sebutkan antisipasi].",
+                "Potensi gangguan pada sistem [isi nama sistem] dapat berdampak pada layanan publik Diskominfo Singkawang. Langkah pencegahan yang disarankan adalah [sebutkan pencegahan].",
+                "Analisis menunjukkan adanya risiko teknis terkait [sebutkan risiko] pada sistem [isi nama sistem]. Hal ini perlu ditangani oleh Diskominfo Singkawang melalui [sebutkan penanganan].",
+                "Kendala pada sistem [isi nama sistem] berpotensi mengganggu proses bisnis di Diskominfo Singkawang. Diperlukan strategi mitigasi berupa [sebutkan strategi].",
+            ],
+            'deskripsi' => [
+                "Sistem [isi nama sistem] yang dikelola oleh Diskominfo Singkawang membutuhkan perubahan karena [isi alasan perubahan]. Pelaksanaan perubahan akan dilakukan dengan cara [sebutkan cara].",
+                "Untuk meningkatkan efisiensi, Diskominfo Singkawang merencanakan pembaruan pada sistem [isi nama sistem]. Fokus utama perubahan adalah [sebutkan fokus perubahan].",
+                "Perubahan sistem [isi nama sistem] diajukan guna mengatasi masalah [sebutkan masalah]. Diskominfo Singkawang akan melakukan pembaruan pada modul [sebutkan modul].",
+                "Sesuai kebutuhan layanan Diskominfo Singkawang, sistem [isi nama sistem] akan disesuaikan dengan fitur tambahan berupa [sebutkan fitur].",
+            ],
+            'dampak' => [
+                "Perubahan pada sistem [isi nama sistem] akan memberikan dampak terhadap [sebutkan pihak yang terdampak] dan proses bisnis di Diskominfo Singkawang, yaitu berupa [sebutkan dampaknya].",
+                "Implementasi sistem [isi nama sistem] diharapkan dapat mempercepat layanan Diskominfo Singkawang, dengan dampak signifikan pada [sebutkan dampak].",
+                "Pembaruan ini akan memengaruhi [sebutkan pengguna/sistem lain]. Diskominfo Singkawang memastikan transisi akan berjalan dengan efek [sebutkan efek transisi].",
+                "Dampak utama dari perubahan sistem [isi nama sistem] adalah penyesuaian pada alur kerja [sebutkan alur], yang akan meningkatkan efektivitas layanan Diskominfo Singkawang.",
+            ],
+            'mitigasi' => [
+                "Untuk mengurangi risiko pada sistem [isi nama sistem], Diskominfo Singkawang akan melakukan mitigasi berupa [sebutkan langkah mitigasi].",
+                "Sebagai langkah pengamanan, tim Diskominfo Singkawang telah menyiapkan *backup* sistem [isi nama sistem] dan prosedur [sebutkan prosedur].",
+                "Strategi mitigasi untuk sistem [isi nama sistem] meliputi [sebutkan strategi awal] dan pemantauan berkala oleh tim teknis Diskominfo Singkawang.",
+                "Diskominfo Singkawang menerapkan tindakan preventif berupa [sebutkan tindakan] untuk meminimalkan kendala selama transisi sistem [isi nama sistem].",
+            ],
+            'persiapan_deskripsi' => [
+                "Tahap persiapan perubahan sistem [isi nama sistem] meliputi [sebutkan tahapan], yang akan dikoordinasikan oleh tim Diskominfo Singkawang.",
+                "Sebelum implementasi, Diskominfo Singkawang akan melakukan [sebutkan kegiatan persiapan] pada sistem [isi nama sistem] untuk memastikan kesiapan infrastruktur.",
+                "Persiapan teknis untuk sistem [isi nama sistem] mencakup penyediaan [sebutkan kebutuhan teknis] dan uji coba awal di lingkungan Diskominfo Singkawang.",
+                "Tim pengembang Diskominfo Singkawang menjadwalkan persiapan sistem [isi nama sistem] dengan fokus pada [sebutkan fokus persiapan].",
+            ],
+            'pelaksanaan_deskripsi' => [
+                "Pelaksanaan perubahan pada sistem [isi nama sistem] dilakukan dengan langkah-langkah [sebutkan langkah-langkah] oleh Diskominfo Singkawang.",
+                "Proses deployment sistem [isi nama sistem] dijadwalkan pada [sebutkan waktu], dengan tahapan eksekusi berupa [sebutkan tahapan eksekusi] oleh Diskominfo Singkawang.",
+                "Tim Diskominfo Singkawang akan menerapkan pembaruan sistem [isi nama sistem] melalui metode [sebutkan metode] secara bertahap.",
+                "Eksekusi teknis untuk perubahan sistem [isi nama sistem] mencakup konfigurasi ulang pada [sebutkan komponen] sesuai standar Diskominfo Singkawang.",
+            ],
+            'keterangan' => [
+                "Pasca-rilis sistem [isi nama sistem], pemantauan akan difokuskan pada metrik [sebutkan metrik] yang dikelola Diskominfo Singkawang.",
+                "Sistem [isi nama sistem] saat ini beroperasi dengan status [sebutkan status]. Evaluasi performa akan dilakukan oleh Diskominfo Singkawang.",
+                "Hasil pantauan awal sistem [isi nama sistem] menunjukkan kondisi [sebutkan kondisi], dan memerlukan tindak lanjut berupa [sebutkan tindak lanjut].",
+                "Keterangan teknis dari Diskominfo Singkawang mencatat bahwa sistem [isi nama sistem] berjalan normal dengan catatan [sebutkan catatan khusus].",
+            ],
+            'penugasan' => [
+                "Pemantauan sistem [isi nama sistem] ditugaskan kepada [sebutkan nama/tim] di Diskominfo Singkawang dengan jadwal [sebutkan jadwal].",
+                "Tim [sebutkan nama tim] dari Diskominfo Singkawang bertanggung jawab untuk mengawasi stabilitas sistem [isi nama sistem] selama fase transisi.",
+                "Penugasan maintenance sistem [isi nama sistem] diberikan kepada [sebutkan personil] dengan tugas utama [sebutkan tugas spesifik].",
+                "Koordinasi pemantauan sistem [isi nama sistem] dipegang oleh [sebutkan nama koordinator] dari Diskominfo Singkawang.",
+            ],
+        ];
+
+        $fallbacks = $isFisik ? $fallbacksFisik : $fallbacksSistem;
+
+        $pilihan = $fallbacks[$kategori] ?? [
+            $isFisik 
+            ? "Terdapat pekerjaan/renovasi [isi kegiatan] yang dikelola oleh Diskominfo Singkawang. Hal ini berkaitan dengan tema {$temaSistem}.\nBagian ini memerlukan [isi tindakan yang perlu dilakukan] agar dapat [sebutkan tujuan/dampaknya]."
+            : "Terdapat penyesuaian pada sistem [isi nama sistem] yang dikelola oleh Diskominfo Singkawang. Hal ini berkaitan dengan tema {$temaSistem}.\nBagian ini memerlukan [isi tindakan yang perlu dilakukan] agar dapat [sebutkan tujuan/dampaknya]."
+        ];
+
+        $fallback = $pilihan[array_rand($pilihan)];
+
+        // Ganti placeholder bracket dengan temaSistem agar template terasa dinamis
+        if ($isFisik) {
+            $fallback = str_replace('[isi kegiatan]', $temaSistem, $fallback);
+        } else {
+            $fallback = str_replace('[isi nama sistem]', $temaSistem, $fallback);
+        }
+
+        // Kembalikan fallback sebagai respon normal (200) agar masuk ke textarea
+        return response($fallback, 200)->header('Content-Type', 'text/plain');
     }
 }
