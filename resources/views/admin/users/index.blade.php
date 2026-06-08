@@ -6,6 +6,11 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="header-glow mb-0"><i class="fas fa-users-cog me-2"></i>Akun Pengguna</h4>
+        <div>
+            <span class="badge bg-danger px-3 py-2 fs-6 shadow-sm rounded-pill">
+                <i class="fas fa-user-shield me-1"></i> Total Admin: {{ $adminCount }}
+            </span>
+        </div>
     </div>
 
     @if($users->isEmpty())
@@ -60,8 +65,8 @@
                                             </button>
                                         </form>
                                     @else
-                                        <button class="btn btn-secondary btn-sm" disabled title="Tidak bisa hapus admin">
-                                            <i class="fas fa-lock"></i>
+                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#adminInfoModal" title="Hapus Akun Admin">
+                                            <i class="fas fa-trash"></i>
                                         </button>
                                     @endif
                                 </div>
@@ -78,6 +83,42 @@
             {{ $users->links() }}
         </div>
     @endif
+</div>
+
+<!-- Modal Informasi Admin -->
+<div class="modal fade" id="adminInfoModal" tabindex="-1" aria-labelledby="adminInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
+            <div class="modal-header border-0 bg-danger text-white py-3" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                <h5 class="modal-title d-flex align-items-center" id="adminInfoModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Tindakan Ditolak
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-5">
+                <div class="mb-4">
+                    <span class="fa-stack fa-3x">
+                        <i class="fas fa-circle fa-stack-2x" style="color: #fce8e6;"></i>
+                        <i class="fas fa-user-shield fa-stack-1x text-danger"></i>
+                    </span>
+                </div>
+                <h4 class="mb-3 text-dark fw-bold">Tidak Bisa Menghapus Admin</h4>
+                <p class="text-muted mb-4">
+                    Demi keamanan sistem, Anda tidak diperbolehkan menghapus sesama akun administrator.
+                </p>
+                <div class="p-3 bg-light rounded-4 mb-2 border">
+                    <small class="text-uppercase tracking-wider text-muted d-block mb-1">Jumlah Akun Admin</small>
+                    <span class="fs-4 fw-bold text-danger">
+                        <i class="fas fa-users-cog me-1"></i> {{ $adminCount }} Admin
+                    </span>
+                    <span class="d-block text-muted small mt-1">aktif dalam sistem saat ini</span>
+                </div>
+            </div>
+            <div class="modal-footer border-0 justify-content-center pb-4">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>

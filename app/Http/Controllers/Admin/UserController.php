@@ -15,9 +15,10 @@ class UserController extends Controller
             abort(403, 'Akses ditolak. Admin only.');
         }
 
-        $users = User::where('role', '!=', 'admin')->paginate(10);
+        $users = User::paginate(10);
+        $adminCount = User::where('role', 'admin')->count();
 
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index', compact('users', 'adminCount'));
     }
 
     public function destroy(User $user)
