@@ -46,7 +46,7 @@ class AiGeneratorController extends Controller
 
         $field  = $request->input('field');
         $apiKey = config('services.gemini.key');
-        $model  = config('services.gemini.model', 'gemini-2.0-flash');
+        $model  = config('services.gemini.model', 'gemini-3.1-flash-lite');
 
         if (empty($apiKey) || $apiKey === 'your-gemini-api-key-here') {
             return response()->json([
@@ -296,7 +296,7 @@ class AiGeneratorController extends Controller
         }
 
         $apiKey = config('services.gemini.key');
-        $model = config('services.gemini.model', 'gemini-2.5-flash');
+        $model = config('services.gemini.model', 'gemini-3.1-flash-lite');
 
         if (empty($apiKey) || $apiKey === 'your-gemini-api-key-here') {
             Log::warning('Gemini API Key is not configured. Falling back to local templates.');
